@@ -1,17 +1,24 @@
 import pandas as pd
-from nlp_preprocessing import clean_text
 
-def preprocess_news():
-    news = pd.read_csv("data/news_data.csv")
+def aggregate_daily_sentiment():
+    # Load sentiment data
+    news = pd.read_csv("data/news_with_sentiment.csv")
 
-    # Clean headlines
-    news["clean_headline"] = news["Headline"].apply(clean_text)
+    # Convert Date to datetime
+    news["Date"] = pd.to_datetime(news["Date"])
 
-    # Keep only required columns for now
-    processed_news = news[["Date", "clean_headline", "Sentiment"]]
+    # Aggregate sentiment by date (mean)
+    daily_sentiment = (
+        news.groupby("Date")["sentiment_score"]
+        .mean()
+        .reset_index()
+        .rename(columns={"sentiment_score": "daily_sentiment"})
+    )
 
-    processed_news.to_csv("data/news_cleaned.csv", index=False)
-    print("Processed news saved to data/news_cleaned.csv")
+    # Save result
+    daily_sentiment.to_csv("data/daily_sentiment.csv", index=False)
+
+    print("Daily sentiment aggregation completed.")
 
 if __name__ == "__main__":
-    preprocess_news()
+    aggregate_daily_sentiment()
