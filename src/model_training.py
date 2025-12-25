@@ -1,4 +1,5 @@
 import pandas as pd
+import joblib
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, classification_report
@@ -38,6 +39,10 @@ def train_model():
     # Evaluation
     print("Accuracy:", accuracy_score(y_test, y_pred))
     print("\nClassification Report:\n", classification_report(y_test, y_pred))
+
+    # ✅ SAVE MODEL (IMPORTANT)
+    joblib.dump(model, "data/stock_sentiment_model.pkl")
+    print("Model saved as data/stock_sentiment_model.pkl")
 
 if __name__ == "__main__":
     train_model()
